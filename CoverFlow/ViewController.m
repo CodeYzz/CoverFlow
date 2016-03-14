@@ -27,9 +27,7 @@
         [sourceImages addObject:image];
     }
     
-    //CoverFlowView *coverFlowView = [CoverFlowView coverFlowViewWithFrame: frame andImages:_arrImages sidePieces:6 sideScale:0.35 middleScale:0.6];
     
-//    CoverFlowView *coverFlowView = [CoverFlowView coverFlowViewWithFrame:CGRectMake(0, 100,[UIScreen mainScreen].bounds.size.width , self.view.frame.size.width) andImages:sourceImages sideImageCount:6 sideImageScale:0.35 middleImageScale:0.9];
     CoverFlow *coverFlow = [CoverFlow coverFlowViewWithFrame:CGRectMake(0, 100,[UIScreen mainScreen].bounds.size.width , self.view.frame.size.width) andImages:sourceImages sideImageCount:6 sideImageScale:0.7 middleImageScale:0.9];
     [self.view addSubview:coverFlow];
 

@@ -7,12 +7,15 @@
 #import "CoverFlowView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <CoreGraphics/CoreGraphics.h>
+#import "UIImageView+LBBlurredImage.h"
 
 #define DISTNACE_TO_MAKE_MOVE_FOR_SWIPE 60
 
 @interface CoverFlowView ()
 
 @property (nonatomic,strong)UIImageView *blurImageView;
+@property (nonatomic,strong)CALayer *blurImageLayer;
+
 
 //setup templates
 -(void)setupTemplateLayers;
@@ -45,6 +48,7 @@
     int _sideVisibleImageCount;
     CGFloat _sideVisibleImageScale;
     CGFloat _middleImageScale;
+    
 }
 
 
@@ -161,6 +165,7 @@
     self.currentRenderingImageIndex = isSwipingToLeftDirection ? self.currentRenderingImageIndex + 1 : self.currentRenderingImageIndex - 1;
  
     
+    
     [self.delegate setBlurImage:[self getCurrentImage]];
     
 }
@@ -187,13 +192,13 @@
 
 }
 
+#pragma mark --  init
 + (id)coverFlowViewWithFrame:(CGRect)frame andImages:(NSMutableArray *)rawImages sideImageCount:(int)sideCount sideImageScale:(CGFloat)sideImageScale middleImageScale:(CGFloat)middleImageScale {
     
      CoverFlowView *flowView = [[CoverFlowView alloc] initWithFrame:frame];
 
     
-    
-#pragma mark
+
     
     flowView.sideVisibleImageCount = sideCount;
     flowView.sideVisibleImageScale = sideImageScale;
@@ -237,6 +242,8 @@
 
 -(void)setupTemplateLayers {
     
+   
+    
     CGFloat centerX = self.bounds.size.width/2;
     CGFloat centerY = self.bounds.size.height/2;
 
@@ -273,6 +280,8 @@
         layer.transform = CATransform3DMakeRotation(rightRadian, 0, 1, 0);
         [self.templateLayers addObject:layer];
     }
+    
+    
 }
 
 - (void)setupImages {
@@ -285,7 +294,7 @@
        UIImage *image = [self.images objectAtIndex:i];
        CALayer *imageLayer = [CALayer layer];
         
-        
+        // 设置 图片
        imageLayer.contents = (__bridge id)image.CGImage;
         
        CGFloat scale = (i == self.currentRenderingImageIndex) ? self.middleImageScale : self.sideVisibleImageScale;
@@ -295,6 +304,7 @@
         
     }
 
+       
     //step3 : according to templates, set its geometry info to corresponding image layer
     //1 means the extra layer in templates layer
     //damn mathmatics
@@ -308,12 +318,14 @@
         //show its reflections
         [self showImageAndReflection:imageLayer];
     }
-
+    
 }
 
 // 添加layer及其“倒影”
 - (void)showImageAndReflection:(CALayer*)layer
 {
+    
+    
     // 制作reflection
     CALayer *reflectLayer = [CALayer layer];
     reflectLayer.contents = layer.contents;
@@ -344,6 +356,7 @@
     [layer addSublayer:reflectLayer];
     // 加入UICoverFlowView的sublayers
     [self.layer addSublayer:layer];
+    
 }
 
 - (void)addPageControl {
